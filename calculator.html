@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Basic scientific calculator</title>
+		<script type="text/javascript"></script>
+		<style type="text/css">
+
+			#calc {
+				background: linear-gradient(0deg, #304352 10%, #d7d2cc 90%);
+				width: 407px;
+				margin: 0 auto;
+				height: 365px;
+				padding: 27px;
+				border-style: groove;
+				border-width: 5px;
+				border-color: grey;
+				border-radius: 10px;
+				font: bold 15px Verdana, sans-serif;
+				-webkit-user-select: none;     
+				-moz-user-select: none;
+				
+			}
+			
+			.display {
+				height: 45px;
+				width: 390px;
+				float: center;
+				background: rgba(0, 0, 0, 0.2);
+				border-radius: 3px;
+				color: white;
+				font-size: 18px;
+				line-height: 40px;
+			}
+			
+			.displayrow {
+				padding: 6px;
+			}
+			
+			.buttons span {
+				background: white;
+				float: left;
+				width: 70px;
+				height: 40px;
+				border-radius: 5px;
+				margin: 5px 5px;
+				color: gray;
+				text-align: center;
+				line-height: 40px;
+				cursor: pointer;
+			}
+			
+			.buttons span:hover {
+				background: linear-gradient(0deg, #83a4d4 10%, #b6fbff 90%);
+				color: black;
+			}
+			
+			span.clearing {
+				background:  linear-gradient(180deg, #e53935 10%, #e35d5b 90%);
+				color: white;
+			}
+			
+			span.equals {
+				background: linear-gradient(90deg, #76b852 10%, #8DC26F 90%);
+				color: black;
+			}
+			
+			span.operator {
+				background: linear-gradient(0deg, #517fa4 10%, #243949 90%);
+				color: white;
+			}
+			
+		</style>
+	</head>
+	
+	<body>
+		<div id="calc">
+		<div class="displayrow">
+			<div class="display"></div>
+		</div>
+		<div class="buttons">
+			<span class="operator">sin</span>
+			<span class="operator">cos</span>
+			<span class="operator">tan</span>
+			<span class="operator">ln</span>
+			<span class="operator">sqrt</span>
+			<span class="operator">sin^-1</span>
+			<span class="operator">cos^-1</span>
+			<span class="operator">tan^-1</span>
+			<span class="operator">log</span>
+			<span class="operator">x^2</span>
+			<span>7</span>
+			<span>8</span>
+			<span>9</span>
+			<span class="clearing">DEL</span>
+			<span class="clearing">AC</span>
+			<span>4</span>
+			<span>5</span>
+			<span>6</span>
+			<span class="operator">*</span>
+			<span class="operator">/</span>
+			<span>1</span>
+			<span>2</span>
+			<span>3</span>
+			<span class="operator">+</span>
+			<span class="operator">-</span>
+			<span>0</span>
+			<span>.</span>
+			<span class="equals">=</span>
+			<span class="operator">(</span>
+			<span class="operator">)</span>
+		</div>
+		</div>
+		
+		<script>
+			var buttons = document.querySelectorAll('.buttons span');
+			var operators = ['+', '-', '*', '/', 'sin', 'cos', 'tan', 'ln', 'sqrt', 'sin^-1', 'cos^-1', 'tan^-1', 'log', 'x^2'];
+			var decimal = 0;
+			
+			//for every button, assign an event once clicked
+			for (var i = 0; i < buttons.length; i++){
+				buttons[i].onclick = function(e){
+					var display = document.querySelector('.display');
+					var displayOut = display.innerHTML;
+					var buttonClicked = this.innerHTML;
+					
+
+					//if an operator is clicked, carry out the relevant operation
+					if (buttonClicked == '='){
+						var equation = displayOut;
+						var lastValue = equation[equation.length-1];
+					}
+					
+					//if operator is clicked
+					else if (operators.indexOf(buttonClicked) > -1){
+						var lastValue = displayOut[displayOut.length - 1];
+			
+						//if last value is an operator or display is empty, do not add operator
+						if (displayOut != '' && operators.indexOf(lastValue) == -1) 
+							display.innerHTML += buttonClicked;
+							
+						//if display is empty, allow a minus operator
+						else if (displayOut == '' && buttonClicked == '-') 
+							display.innerHTML += buttonClicked;
+						
+						//carry out relevant operation for selected operator
+						if (buttonClicked == 'sin'){
+							display.innerHTML = Math.sin(displayOut);
+						}
+						
+						else if (buttonClicked == 'cos'){
+							display.innerHTML = Math.cos(displayOut);
+						}
+					
+						else if (buttonClicked == 'tan'){
+							display.innerHTML = Math.tan(displayOut);
+						}
+					
+						else if (buttonClicked == 'ln'){
+							display.innerHTML = Math.log(displayOut);
+						}
+					
+						else if (buttonClicked == 'sqrt'){
+							display.innerHTML = Math.sqrt(displayOut);
+						}
+					
+						else if (buttonClicked == 'sin^-1'){
+							display.innerHTML = Math.asin(displayOut);
+						}
+					
+						else if (buttonClicked == 'cos^-1'){
+							display.innerHTML = Math.acos(displayOut);
+						}
+					
+						else if (buttonClicked == 'tan^-1'){
+							display.innerHTML = Math.atan(displayOut);
+						}
+					
+						else if (buttonClicked == 'log'){
+							display.innerHTML = Math.log(displayOut)/Math.LN10;
+						}
+					
+						else if (buttonClicked == 'x^2'){
+							display.innerHTML = Math.pow(displayOut, 2);
+						}
+						//operator added, so decimal can be added again
+						decimal = 0;
+					}
+
+					//add decimal if it is not already present
+					else if (buttonClicked == '.'){
+						if (decimal == 0) {
+							display.innerHTML += buttonClicked;
+						}
+						//no more decimals can be added
+						decimal = 1;
+					}
+					
+					//delete the last value in the display
+					else if (buttonClicked == 'DEL'){
+						display.innerHTML = displayOut.replace(/.$/, '');
+					}
+					
+					//clear the display
+					else if (buttonClicked == 'AC'){
+						display.innerHTML = '';
+						//allow decimal to be added after clearing
+						decimal = 0;
+					}
+
+					//if a number was clicked, add it to the display
+					else {
+						display.innerHTML += buttonClicked;
+					}
+					
+					//if last value is a decimal or operator, delete it
+					if (operators.indexOf(lastValue) != -1 || lastValue == '.' || operators.indexOf(buttonClicked) > -1) {
+						equation = equation.replace(/.$/, '');
+					}	
+
+					//if equation was clicked, evaluate the equation in the display
+					if (equation){
+						display.innerHTML = eval(equation);
+					}
+				}
+			}
+		
+		</script>
+	</body>
+	
+</html>
